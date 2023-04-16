@@ -2,30 +2,41 @@ Config = {}
 
 Config.Debug = false
 
+Config.DefaultItems = { -- These can spawn at any wreck
+	{'iron', 1, 5}, -- Item Name, Min Amount, Max
+	{'copper', 1, 3},
+	{'scrapmetal', 2, 5},
+	{'garbage', 3, 8},
+	{'money', 50, 250},
+
+}
+
 Config.wreckTypes = {
     ['civwreck'] = {
-		'iron', 'copper', 'scrapmetal',
-		'garbage','garbage','money',
-		'parachute','rolex','goldchain',
+		{'parachute', 1, 3},
+		{'rolex', 1, 2},
+		{'goldchain', 1, 3}
 	},
 	['milwreck'] = {
-		'iron', 'copper', 'scrapmetal', -- Base Metals, useful to fill randoms
-		'scrapmetal','garbage','money',
-		'WEAPON_TACTICALRIFLE','WEAPON_PISTOL',
-		'ammo-9','ammo-rifle','bodyarmor_1',
-		
+		{'WEAPON_TACTICALRIFLE', 1, 1}, -- Item Name, Min Amount, Max
+		{'WEAPON_PISTOL', 1, 2},
+		{'ammo-9', 3, 25},
+		{'ammo-rifle', 3, 40},
+		{'bodyarmor_3', 1, 3}
 	},
-    ['smuggler'] = {
-		'iron', 'copper', 'scrapmetal',
-		'garbage', 'coke_brick','coke_packaged',
-		'money','black_money'
 
+    ['smuggler'] = {
+		{'coke_brick', 1, 2},
+		{'coke_packaged', 1, 10},
+		{'black_money', 1250, 4000}
 	},
+
 	['cargo'] = {
-		'iron', 'copper', 'scrapmetal',
-		'garbage','garbage','garbage', -- More garbge you add, the more the ratios are shifted, player has a 30% Chance to receive these
-		'television','WEAPON_CARBINERIFLE', -- This is the "Good Loot", 40% chance to receive one of these. If you want to change the odds, add/remove more filler
-		'gold','diamond','money'
+		{'television', 1, 4},
+		{'WEAPON_CARBINERIFLE', 1, 2},
+		{'diamond', 1, 5},
+		{'gold', 1, 4},
+		{'money', 150, 1000}
 	},
 }
 
