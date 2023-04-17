@@ -1,39 +1,36 @@
-local options = {}
 local lootsNet = {}
 local lootCount = 0
 
 ------------------------------------------------------------
--- Startup --
------------------------------------------------------------
-Citizen.CreateThread(function()
-	for k,v in pairs(Config.wrecks) do
-		for k2, v2 in pairs(Config.wrecks[k].spawnCoords) do
-			local sphere = lib.zones.sphere({
-				coords = Config.wrecks[k].spawnCoords[k2],
-				radius = 50,
-				debug = Config.Debug,
-				onEnter = onEnter,
-				onExit = onExit,
-				type = k,
-				zone = k2,
-				sphere = sphere
-			})
-		end
-	end
-end)
+-- Coords --
+------------------------------------------------------------
+local function getCoordZ(x, y, z)
+	local foundGround, zCoord = GetGroundZFor_3dCoord(x, y, z, false)
+	return zCoord
+end
 
+local function lootCoords(coordX, coordY, coordZ)
+	local x, y
 
-function onEnter(self)
-		SpawnLoots(self.type, self.zone)
-	end
+	math.randomseed(GetGameTimer())
+	local modX = math.random(-10, 10)
 
-function onExit(self)
-	DeleteLoots()
+	Wait(100)
+
+	math.randomseed(GetGameTimer())
+	local modY = math.random(-10, 10)
+
+	x = coordX + modX
+ 	y = coordY + modY
+
+	local z = getCoordZ(x,y,coordZ)
+	local coords = vector3(x,y,z)
+	return coords
 end
 ------------------------------------------------------------
 -- Spawn Loots --
 ------------------------------------------------------------
-function DeleteLoots()
+local function deleteLoots()
 	for k, v in pairs(lootsNet) do
 		local netId = NetworkGetNetworkIdFromEntity(v)
 		exports.ox_target:removeEntity(netId, 'shark:pick')
@@ -46,7 +43,8 @@ function DeleteLoots()
 	lootsNet = {}
 end
 
-function SpawnLoots(type, spawnpoint)
+local function spawnLoots(type, spawnpoint)
+	local options = {}
 	local model = Config.wrecks[type].model
 	options = {
 		{
@@ -54,7 +52,7 @@ function SpawnLoots(type, spawnpoint)
 			icon = 'fa-solid fa-hand',
 			label = 'Grab Loot',
 			onSelect = function(data)
-				OpenLoot(data.entity, type, spawnpoint)
+				TriggerEvent('sharkdiving:OpenLoot', data.entity, type, spawnpoint)
 			end,
 			canInteract = function(entity, distance, coords, name, bone)
 				return distance < 5.5
@@ -62,7 +60,7 @@ function SpawnLoots(type, spawnpoint)
 		}
 	}
 	while lootCount < 6 do
-		local coords = LootCoords(Config.wrecks[type].spawnCoords[spawnpoint].x, Config.wrecks[type].spawnCoords[spawnpoint].y, Config.wrecks[type].spawnCoords[spawnpoint].z)
+		local coords = lootCoords(Config.wrecks[type].spawnCoords[spawnpoint].x, Config.wrecks[type].spawnCoords[spawnpoint].y, Config.wrecks[type].spawnCoords[spawnpoint].z)
 		local obj = CreateObject(model, vector3(coords), true)
 		local rotation = math.random(1,360)+0.01
 		SetEntityHeading(obj, rotation)
@@ -77,43 +75,18 @@ function SpawnLoots(type, spawnpoint)
 		lootCount = lootCount + 1
 	end
 end
-function LootCoords(coordX, coordY, coordZ)
-	local x, y
-
-	math.randomseed(GetGameTimer())
-	local modX = math.random(-10, 10)
-
-	Wait(100)
-
-	math.randomseed(GetGameTimer())
-	local modY = math.random(-10, 10)
-
-	x = coordX + modX
- 	y = coordY + modY
-
-	local z = GetCoordZ(x,y,coordZ)
-	local coords = vector3(x,y,z)
-	return coords
-end
-
-function GetCoordZ(x, y, z)
-	local foundGround, zCoord = GetGroundZFor_3dCoord(x, y, z, false)
-
-	return zCoord
-end
 ------------------------------------------------------------
 -- Collect Loot --
 ------------------------------------------------------------
-
-function OpenLoot(entity, type, zone)
-
+RegisterNetEvent("sharkdiving:OpenLoot")
+AddEventHandler('sharkdiving:OpenLoot', function(entity, type, zone)
 	local playerPed = PlayerPedId()
 	local coords = GetEntityCoords(playerPed)
 	local nearbyID
-
+	exports.ox_target:removeEntity(NetworkGetNetworkIdFromEntity(entity), 'shark:pick')
 
 	for i=1, #lootsNet, 1 do
-		if GetDistanceBetweenCoords(coords, GetEntityCoords(lootsNet[i]), false) < 1 then
+		if GetDistanceBetweenCoords(coords, GetEntityCoords(lootsNet[i]), false) < 5 then
 			nearbyID = i
 		end
 	end
@@ -134,13 +107,40 @@ function OpenLoot(entity, type, zone)
 		local success = lib.skillCheck('easy', 'e')
 		TriggerServerEvent('sharkdiving:collected', Config.wrecks[type].type, success)
 		table.remove(lootsNet, nearbyID)
-		exports.ox_target:removeEntity(nearbyID, 'shark:pick')
 		DeleteObject(entity)
 		lootCount = lootCount - 1
 
 		Citizen.CreateThread(function()
 			Wait(5000)
-			SpawnLoots(type, zone)
+			spawnLoots(type, zone)
 		end)
 	end
+end)
+
+------------------------------------------------------------
+-- Create Spheres --
+-----------------------------------------------------------
+local function onEnter(self)
+	spawnLoots(self.type, self.zone)
 end
+
+local function onExit(self)
+	deleteLoots()
+end
+
+Citizen.CreateThread(function()
+	for k,v in pairs(Config.wrecks) do
+		for k2, v2 in pairs(Config.wrecks[k].spawnCoords) do
+			local sphere = lib.zones.sphere({
+				coords = Config.wrecks[k].spawnCoords[k2],
+				radius = 50,
+				debug = Config.Debug,
+				onEnter = onEnter,
+				onExit = onExit,
+				type = k,
+				zone = k2,
+				sphere = sphere
+			})
+		end
+	end
+end)

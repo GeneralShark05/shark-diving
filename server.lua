@@ -4,10 +4,11 @@
 local ox_inventory = exports.ox_inventory
 
 local function merge(table1, table2)
+    local table3 = table1
     for k, v in pairs(table2) do
         table.insert(table1, v)
     end
-    return table1
+    return table3
 end
 
 local function prizeGen(type)
