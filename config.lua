@@ -3,40 +3,39 @@ Config = {}
 Config.Debug = false
 
 Config.DefaultItems = { -- These can spawn at any wreck
-	{'iron', 1, 5}, -- Item Name, Min Amount, Max
-	{'copper', 1, 3},
-	{'scrapmetal', 2, 5},
-	{'garbage', 3, 8},
-	{'money', 50, 250},
-
+	{'garbage', 3, 8, 35}, -- Item Name, Min Amount, Max, Chance
+	{'iron', 1, 5, 30},
+	{'copper', 1, 3, 25},
+	{'scrapmetal', 2, 5, 10},
+	{'money', 50, 250, 20},
 }
 
 Config.wreckTypes = {
     ['civwreck'] = {
-		{'parachute', 1, 3},
-		{'rolex', 1, 2},
-		{'goldchain', 1, 3}
+		{'parachute', 1, 3, 35},
+		{'rolex', 1, 2, 25},
+		{'goldchain', 1, 3, 10}
 	},
 	['milwreck'] = {
-		{'WEAPON_TACTICALRIFLE', 1, 1}, -- Item Name, Min Amount, Max
-		{'WEAPON_PISTOL', 1, 2},
-		{'ammo-9', 3, 25},
-		{'ammo-rifle', 3, 40},
-		{'bodyarmor_3', 1, 3}
+		{'ammo-9', 3, 25, 20}, -- Item Name, Min Amount, Max, Chance
+		{'ammo-rifle', 3, 40, 20},
+		{'bodyarmor_3', 1, 3, 15},
+		{'WEAPON_PISTOL', 1, 2, 10},
+		{'WEAPON_TACTICALRIFLE', 1, 1, 5},
 	},
 
     ['smuggler'] = {
-		{'coke_brick', 1, 2},
-		{'coke_packaged', 1, 10},
-		{'black_money', 1250, 4000}
+		{'black_money', 1250, 4000, 20},
+		{'coke_packaged', 1, 10, 10},
+		{'coke_brick', 1, 2, 5},
 	},
 
 	['cargo'] = {
-		{'television', 1, 4},
-		{'WEAPON_CARBINERIFLE', 1, 2},
-		{'diamond', 1, 5},
-		{'gold', 1, 4},
-		{'money', 150, 1000}
+		{'television', 1, 4, 15},
+		{'money', 1500, 3000, 10},
+		{'WEAPON_CARBINERIFLE', 1, 2, 5},
+		{'gold', 1, 4, 5},
+		{'diamond', 1, 5, 2},
 	},
 }
 

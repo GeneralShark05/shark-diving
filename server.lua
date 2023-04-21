@@ -13,11 +13,20 @@ end
 
 local function prizeGen(type)
     local lootTable = merge(Config.wreckTypes[type], Config.DefaultItems)
-    local reward = {'water', 1, 5}
+    local reward = nil
+
     if lootTable ~= nil then
         local max = #lootTable
-        local choice = math.random(1, max)
         reward = lootTable[choice]
+    end
+
+    while reward == nil do
+        for k, item in pairs(lootTable) do
+            local choice = math.random(100)
+            if choice <= item[3] then
+                reward = item
+            end
+        end
     end
     return reward
 end
@@ -27,7 +36,7 @@ AddEventHandler('sharkdiving:collected', function(type, success)
     local src = source
     if success then
         local reward = prizeGen(type)
-        local item, min, max = table.unpack(reward)
+        local item, min, max, calc = table.unpack(reward)
         local quantity = math.random(min, max)
 
         ox_inventory:AddItem(src, item, quantity)
