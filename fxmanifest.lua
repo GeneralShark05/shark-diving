@@ -4,7 +4,7 @@ lua54 'yes'
 
 author 'General Shark'
 description 'Dive for Loot'
-version '1.0.0'
+version '1.1'
 
 dependencies { 'ox_lib', 'ox_inventory', 'ox_target'}
 
