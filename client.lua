@@ -1,5 +1,6 @@
 local lootsNet = {}
 local lootCount = 0
+local isGathering = false
 
 ------------------------------------------------------------
 -- Coords --
@@ -55,7 +56,7 @@ local function spawnLoots(type, spawnpoint)
 				TriggerEvent('sharkdiving:OpenLoot', data.entity, type, spawnpoint)
 			end,
 			canInteract = function(entity, distance, coords, name, bone)
-				return distance < 5.5
+				return distance < 5.5 and not isGathering
 			end
 		}
 	}
@@ -80,6 +81,7 @@ end
 ------------------------------------------------------------
 RegisterNetEvent("sharkdiving:OpenLoot")
 AddEventHandler('sharkdiving:OpenLoot', function(entity, type, zone)
+	isGathering = true
 	local playerPed = PlayerPedId()
 	local coords = GetEntityCoords(playerPed)
 	local nearbyID
@@ -115,6 +117,7 @@ AddEventHandler('sharkdiving:OpenLoot', function(entity, type, zone)
 			spawnLoots(type, zone)
 		end)
 	end
+	isGathering = false
 end)
 
 ------------------------------------------------------------
