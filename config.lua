@@ -2,6 +2,8 @@ Config = {}
 
 Config.Debug = false
 
+Config.Radius = 50 -- Radius of Spawn Zones
+
 Config.DefaultItems = { -- These can spawn at any wreck
 	{'garbage', 3, 8, 40}, -- Item Name, Min Amount, Max, Chance
 	{'iron', 1, 5, 25},

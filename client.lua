@@ -13,7 +13,7 @@ local function lootCoords(coordX, coordY, coordZ)
 	local x, y
 
 	math.randomseed(GetGameTimer())
-	local modX = math.random(-10, 10)
+	local modX = math.random((Config.Radius-10), (Config.Radius))
 
 	Wait(100)
 
@@ -133,7 +133,7 @@ Citizen.CreateThread(function()
 		for k2, v2 in pairs(Config.wrecks[k].spawnCoords) do
 			local sphere = lib.zones.sphere({
 				coords = Config.wrecks[k].spawnCoords[k2],
-				radius = 50,
+				radius = (Config.Radius + 25),
 				debug = Config.Debug,
 				onEnter = onEnter,
 				onExit = onExit,
